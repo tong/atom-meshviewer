@@ -1,0 +1,12 @@
+-js lib/meshviewer.js
+-cp src
+-cp ../../lib/three.hx/src
+-cp ../../lib/tron/src
+-cp ../../lib/hxatom/src
+-cp ../../lib/om/src
+-lib hxnodejs
+-D noEmbedJS
+MeshViewerPackage
+-debug
+#--no-traces
+-dce full

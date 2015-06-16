@@ -1,0 +1,13 @@
+{
+  "name": "meshviewer",
+  "main": "./lib/meshviewer",
+  "version": "0.1.0",
+  "description": "Preview 3D meshes",
+  "keywords": ["mesh","3d"],
+  "repository": "https://github.com/tong/atom-meshviewer",
+  "license": "MIT",
+  "engines": {
+    "atom": ">=0.174.0 <2.0.0"
+  },
+  "dependencies": {}
+}
