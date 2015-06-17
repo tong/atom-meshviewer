@@ -6,7 +6,7 @@
 -cp ../../lib/om/src
 -lib hxnodejs
 -D noEmbedJS
-MeshViewerPackage
+meshviewer.MeshViewerPackage
 -debug
 #--no-traces
 -dce full

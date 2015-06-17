@@ -3,6 +3,11 @@
   "main": "./lib/meshviewer",
   "version": "0.1.0",
   "description": "Preview 3D meshes",
+
+  "consumedServices": {
+      "status-bar": { "versions": { "^1.0.0": "consumeStatusBar" } }
+  },
+
   "keywords": ["mesh","3d"],
   "repository": "https://github.com/tong/atom-meshviewer",
   "license": "MIT",

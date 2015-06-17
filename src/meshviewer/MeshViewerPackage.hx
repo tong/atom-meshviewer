@@ -1,5 +1,7 @@
+package meshviewer;
 
 import atom.Disposable;
+import meshviewer.view.StatusBarView;
 
 using Lambda;
 using haxe.io.Path;
@@ -10,10 +12,13 @@ class MeshViewerPackage {
 
     static var allowedFileTypes = ['json'];
 
-    static var config = {};
+    static var config = {
+        //TODO
+    };
 
     static var opener : Disposable;
     static var viewProvider : Disposable;
+    static var statusBar : StatusBarView;
 
     static function activate( state ) {
 
@@ -27,6 +32,8 @@ class MeshViewerPackage {
         });
         */
 
+        statusBar = new StatusBarView();
+
         viewProvider = Atom.views.addViewProvider( MeshViewer, function(model:MeshViewer) {
                 var view = new MeshViewerView( model.path );
                 model.initialize( view );
@@ -35,8 +42,10 @@ class MeshViewerPackage {
         );
 
         opener = Atom.workspace.addOpener(function(path){
-            if( allowedFileTypes.has( path.extension() ) )
+            if( allowedFileTypes.has( path.extension() ) ) {
+                //TODO parse here ?
                 return new MeshViewer( path );
+            }
             return null;
         });
     }
@@ -44,6 +53,10 @@ class MeshViewerPackage {
     static function deactivate() {
         viewProvider.dispose();
         opener.dispose();
+    }
+
+    static function consumeStatusBar( bar ) {
+        bar.addLeftTile( { item: statusBar.dom, priority:-10 } );
     }
 
     static function getTreeViewFile() : String {

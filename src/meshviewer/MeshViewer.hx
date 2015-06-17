@@ -1,3 +1,4 @@
+package meshviewer;
 
 import js.Browser.window;
 import three.*;
@@ -18,7 +19,7 @@ class MeshViewer {
     var view : MeshViewerView;
 
     var scene : Scene;
-    var grid : GridHelper;
+    //var grid : GridHelper;
     var camera : PerspectiveCamera;
     var controls : EditorControls;
     var renderer : WebGLRenderer;
@@ -26,6 +27,9 @@ class MeshViewer {
     var lastWidth : Int;
     var lastHeight : Int;
     var animationFrameId : Int;
+
+    //var materials : Array<>;
+    var material : Material;
 
     public function new( path : String ) {
 
@@ -102,12 +106,19 @@ class MeshViewer {
 
         scene.add( new AxisHelper(1) );
 
-        grid = new GridHelper(10,1);
-        scene.add( grid );
+        //var grid = new GridHelper(10,1);
+        //scene.add( grid );
 
         camera = new PerspectiveCamera( 50, width/height, 0.00001, 1000000 );
         camera.position.set( 0, 5, 5 );
         camera.lookAt( scene.position );
+
+        var light = new DirectionalLight( 0xffffff );
+        //var light = new tron.light.ThreePointLighting();
+        light.position.set( 5, 5, 5 );
+        //light.lookAt( scene.position );
+        scene.add( light );
+        scene.add( new DirectionalLightHelper( light ) );
 
         renderer = new WebGLRenderer({
             canvas: view.canvas,
@@ -117,16 +128,37 @@ class MeshViewer {
         renderer.render( scene, camera );
         renderer.setSize( width, height );
 
+        material = new MeshLambertMaterial( {color:'#aaa' });
+
         Fs.readFile( path, {encoding:'utf8'}, function(e,r){
             if( e != null ) {
-                Atom.notifications.addWarning(Std.string(e));
+                Atom.notifications.addWarning( Std.string(e) );
             } else {
                 switch path.extension() {
                 case 'json':
-                    var loaded = new three.JSONLoader().parse( Json.parse(r) );
-                    var material = new MeshBasicMaterial( {color:'#aaa' });
-                    var mesh = new Mesh( loaded.geometry, material );
+                    var geometry : Geometry = null;
+                    try {
+                        geometry = new three.JSONLoader().parse( Json.parse(r) ).geometry;
+                    } catch(e:Dynamic) {
+                        Atom.notifications.addWarning( path+': '+Std.string(e) );
+                        return;
+                    }
+                    //var material = new MeshBasicMaterial( {color:'#aaa' });
+                    var mesh = new Mesh( geometry, material );
                     scene.add( mesh );
+
+                    var boundingBox = new BoundingBoxHelper( mesh );
+                    scene.add( boundingBox );
+                    boundingBox.update();
+
+                    //trace(boundingBox);
+                    //trace(boundingBox.scale);
+                    var gridSize = boundingBox.scale.x;
+                    if( boundingBox.scale.y > gridSize ) gridSize = boundingBox.scale.y;
+                    if( boundingBox.scale.z > gridSize ) gridSize = boundingBox.scale.z;
+                    var grid = new GridHelper( gridSize/2, gridSize/10 );
+                    scene.add( grid );
+
                 default:
 
                 }
@@ -136,12 +168,15 @@ class MeshViewer {
 
         controls = new EditorControls( view.canvas, camera );
         controls.onChange = function() {
-
+            //TODO
             //view.renderInfo = renderer.info;
-
             renderFrame = true;
         }
         controls.enabled = true;
+
+        window.addEventListener( 'keydown', handleKeyDown, false );
+
+        requestAnimationFrame();
 
         //view.parentElement.addEventListener( 'resize', function(e) trace(e) );
     }
@@ -151,6 +186,10 @@ class MeshViewer {
 
     function handleBlur(e) {
         subscriptions.dispose();
+    }
+
+    function handleKeyDown(e) {
+        trace(e);
     }
 
     inline function requestAnimationFrame() {
