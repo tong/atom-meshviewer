@@ -11,7 +11,7 @@ class MeshViewerView {
 
     public var dom(default,null) : DivElement;
     public var canvas(default,null) : CanvasElement;
-    public var settings(default,null) : SettingsMenu;
+    //public var settings(default,null) : SettingsMenu;
     public var controls(default,null) : EditorControls;
 
     var renderInfo : Dynamic;
@@ -30,8 +30,8 @@ class MeshViewerView {
         dom.classList.add( 'meshviewer' );
         dom.setAttribute( 'tabindex', '-1' );
 
-        settings = new SettingsMenu();
-        dom.appendChild( settings.dom );
+        //settings = new SettingsMenu();
+        //dom.appendChild( settings.dom );
 
         canvas = document.createCanvasElement();
         dom.appendChild( canvas );
@@ -143,7 +143,7 @@ class MeshViewerView {
         for( m in meshes.children) {
             var mesh : Mesh = cast m;
             mesh.geometry.dispose();
-            mesh.material.dispose();
+            //mesh.material.dispose();
             meshes.remove(m);
         }
         dirtyRenderFrame = true;

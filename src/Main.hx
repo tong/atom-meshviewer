@@ -1,7 +1,6 @@
 
 import js.node.Fs;
 import atom.Disposable;
-import StatusBarView;
 
 using Lambda;
 using haxe.io.Path;
@@ -22,14 +21,22 @@ class Main {
 
     static var opener : Disposable;
     static var viewProvider : Disposable;
+    static var statusBar : StatusBarView;
 
     static function activate( state ) {
 
         trace( 'Atom-meshviewer' );
 
+        statusBar = new StatusBarView();
+
         viewProvider = Atom.views.addViewProvider( MeshViewer, function(model:MeshViewer) {
                 var view = new MeshViewerView();
-                model.init( view );
+                model.init( view, function(e) {
+                    if( e != null ) {
+                        trace(e);
+                        Atom.notifications.addWarning(e);
+                    }
+                });
                 return view.dom;
         });
 
@@ -48,7 +55,7 @@ class Main {
     }
 
     static function consumeStatusBar( bar ) {
-        //bar.addLeftTile( { item: statusBar.dom, priority:-10 } );
+        bar.addLeftTile( { item: statusBar.dom, priority:-10 } );
     }
 
     static function getTreeViewFile() : String {

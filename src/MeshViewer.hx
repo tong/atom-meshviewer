@@ -22,7 +22,7 @@ class MeshViewer {
         this.path = path;
     }
 
-    public function init( view : MeshViewerView ) {
+    public function init( view : MeshViewerView, callback : String->Void ) {
 
         this.view = view;
 
@@ -32,21 +32,27 @@ class MeshViewer {
             } else {
                 switch path.extension() {
                 case 'mesh':
-                    var json : Dynamic = try Json.parse(r) catch(e:Dynamic){
-                        trace(e);//TODO
+                    var loaded : {geometry:Geometry,materials:Array<Material>} = null;
+                    try {
+                        loaded = new three.JSONLoader().parse( Json.parse(r) );
+                    } catch(e:Dynamic) {
+                        callback( e );
                         return;
                     }
                     //TODO  validate
-                    if( json.metadata == null ) trace( 'invalid file format' );
-                    var loaded = new three.JSONLoader().parse( json );
+                    //if( json.metadata == null ) trace( 'invalid file format' );
                     var material = (loaded.materials != null) ? loaded.materials[0] : defaultMaterial;
                     var mesh = new Mesh( loaded.geometry, material );
                     view.addMesh( mesh );
+                    callback( null );
+
                 case 'obj':
+                    //TODO
                     var l = new three.loaders.OBJLoader();
                     var obj = l.parse(r);
                     var mesh : Mesh = cast obj.children[0];
                     view.addMesh( mesh );
+                    callback( null );
                 //...
                 }
 
@@ -59,6 +65,8 @@ class MeshViewer {
 
                 //Atom.commands.add( '.meshviewer', 'meshviewer:rotate-right', function(_) view.rotateMesh(0,10,0) );
                 //Atom.commands.add( '.meshviewer', 'meshviewer:rotate-left', function(_) view.rotateMesh(0,-10,0) );
+
+                //callback( null );
             }
         });
     }
