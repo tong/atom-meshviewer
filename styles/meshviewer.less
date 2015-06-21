@@ -1,47 +1,33 @@
 @import "ui-variables";
 
-
-///// MeshViewer
-
 .meshviewer {
+    width: 100%;
+    height: 100%;
+}
 
-    display: -webkit-flex;
-
+.meshviewer canvas {
     position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
-
     width: 100%;
     height: 100%;
-
-    //width: inherit;
-    //height: inherit;
-    /*
-    */
-    //background: #000;
-}
-
-.meshviewer canvas {
-    position:absolute;
-    top:0;
-    left:0;
     z-index:1;
 }
 
-.meshviewer .menu {
-    position:absolute;
-    top:0;
-    left:0;
+.meshviewer .info {
+    position: absolute;
+    bottom: 2px;
+    left: 6px;
     color: @text-color;
-    cursor: default;
     z-index:2;
+    -webkit-user-select: none;
+    cursor: default;
 }
 
-
-///// StatusBar
-
-.meshviewer-status {
-    margin-right: 10px;
+.meshviewer .settings {
+    position: absolute;
+    bottom: 20px;
+    z-index:3;
 }

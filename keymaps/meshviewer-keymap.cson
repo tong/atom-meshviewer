@@ -1,0 +1,8 @@
+'.meshviewer':
+    'space': 'meshviewer:reset-view'
+    'right': 'meshviewer:rotate-right'
+    'left': 'meshviewer:rotate-left'
+    'up': 'meshviewer:pan-up'
+    'down': 'meshviewer:pan-down'
+    'b': 'meshviewer:toggle-bounding-box'
+    'r': 'meshviewer:toggle-auto-rotate'

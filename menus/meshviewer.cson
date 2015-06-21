@@ -1,5 +1,0 @@
-'context-menu':
-    '[data-path$=json]': [
-        { label: 'Preview Mesh', command: 'meshviewer:open' },
-        { type: 'separator' }
-    ]

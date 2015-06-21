@@ -5,8 +5,8 @@
 -cp ../../lib/hxatom/src
 -cp ../../lib/om/src
 -lib hxnodejs
+-dce full
 -D noEmbedJS
-meshviewer.MeshViewerPackage
+Main
 -debug
 #--no-traces
--dce full
