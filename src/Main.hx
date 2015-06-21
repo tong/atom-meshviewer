@@ -33,8 +33,9 @@ class Main {
                 var view = new MeshViewerView();
                 model.init( view, function(e) {
                     if( e != null ) {
-                        trace(e);
-                        Atom.notifications.addWarning(e);
+                        Atom.notifications.addError( 'Mesh error   ```'+e+'```' );
+                        //TODO close meshviewer pane
+                        //model.destroy();
                     }
                 });
                 return view.dom;
