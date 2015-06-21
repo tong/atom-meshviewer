@@ -11,7 +11,7 @@ using haxe.io.Path;
 @:keep
 class MeshViewer {
 
-    public static var defaultMaterial = new MeshLambertMaterial({});
+    //public static var defaultMaterial = new MeshLambertMaterial({});
 
     public var path(default,null) : String;
 
@@ -28,7 +28,7 @@ class MeshViewer {
 
         Fs.readFile( path, {encoding:'utf8'}, function(e,r){
             if( e != null ) {
-                Atom.notifications.addWarning( e.message );
+                callback( e.message );
             } else {
                 switch path.extension() {
                 case 'mesh':
@@ -41,7 +41,7 @@ class MeshViewer {
                     }
                     //TODO  validate
                     //if( json.metadata == null ) trace( 'invalid file format' );
-                    var material = (loaded.materials != null) ? loaded.materials[0] : defaultMaterial;
+                    var material = (loaded.materials != null) ? loaded.materials[0] : new MeshLambertMaterial({});
                     var mesh = new Mesh( loaded.geometry, material );
                     view.addMesh( mesh );
                     callback( null );
@@ -71,9 +71,25 @@ class MeshViewer {
         });
     }
 
+    /*
+    public function attached() {
+        trace("attached");
+    }
+    */
+
     public function destroy() {
         if( commandResetView != null ) commandResetView.dispose();
         if( view != null ) view.destroy();
+    }
+
+    /*
+    public inline function getPlaceHolder() {
+        return js.Browser.document.createDivElement();
+    }
+    */
+
+    public inline function getPath() {
+        return path;
     }
 
     public inline function getTitle() {
