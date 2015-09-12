@@ -11,8 +11,8 @@ class MeshViewerView {
 
     public var dom(default,null) : DivElement;
     public var canvas(default,null) : CanvasElement;
-    //public var settings(default,null) : SettingsMenu;
     public var controls(default,null) : EditorControls;
+    //public var settings(default,null) : SettingsMenu;
 
     var renderInfo : Dynamic;
     var scene : Scene;
@@ -23,15 +23,13 @@ class MeshViewerView {
     var meshes : Group;
 
     var boundingBox : BoundingBoxHelper;
+    var grid : GridHelper;
 
     public function new( ) {
 
         dom = document.createDivElement();
         dom.classList.add( 'meshviewer' );
         dom.setAttribute( 'tabindex', '-1' );
-
-        //settings = new SettingsMenu();
-        //dom.appendChild( settings.dom );
 
         canvas = document.createCanvasElement();
         dom.appendChild( canvas );
@@ -49,9 +47,9 @@ class MeshViewerView {
 
         scene.add( new AxisHelper(2) );
 
-        var grid = new GridHelper(10,1);
+        //var grid = new GridHelper(10,1);
         //grid.setColors();
-        scene.add( grid );
+        //scene.add( grid );
 
         var dirLight = new DirectionalLight( 0xffffff );
         dirLight.position.set( 3, 3, 2 );
@@ -68,6 +66,9 @@ class MeshViewerView {
         controls = new EditorControls( canvas, camera );
         controls.onChange = function() dirtyRenderFrame = true;
 
+        //settings = new SettingsMenu();
+        //dom.appendChild( settings.dom );
+
         dom.addEventListener( 'contextmenu', function(e) {
             e.stopPropagation();
             return false;
@@ -82,11 +83,9 @@ class MeshViewerView {
         //dom.addEventListener( 'DOMNodeInserted', handleViewInsert, false );
     }
 
-    public function destroy() {
-        if( animationFrameId != null ) window.cancelAnimationFrame( animationFrameId );
-    }
-
     public function addMesh( mesh : Mesh ) {
+
+        //var obj = new MeshObject( mesh );
 
         meshes.add( mesh );
         scene.add( mesh );
@@ -98,16 +97,15 @@ class MeshViewerView {
         var wireframeHelper = new WireframeHelper( mesh );
         scene.add( wireframeHelper );
 
-        dirtyRenderFrame = true;
-
         //TODO
-        /*
         var gridSize = boundingBox.scale.x;
+        //trace(gridSize);
         if( boundingBox.scale.y > gridSize ) gridSize = boundingBox.scale.y;
         if( boundingBox.scale.z > gridSize ) gridSize = boundingBox.scale.z;
-        var grid = new GridHelper( gridSize/2, gridSize/10 );
+        grid = new GridHelper( gridSize/2, gridSize/10 );
         scene.add( grid );
-        */
+
+        dirtyRenderFrame = true;
     }
 
     public function rotateMesh( x : Float, y : Float, z : Float ) {
@@ -149,6 +147,11 @@ class MeshViewerView {
         dirtyRenderFrame = true;
     }
 
+    public function destroy() {
+        cancelAnimationFrame();
+        dom.remove();
+    }
+
     function update() {
 
         requestAnimationFrame();
@@ -166,7 +169,7 @@ class MeshViewerView {
 
             var r = renderer.info.render;
             var m = renderer.info.memory;
-            renderInfo.textContent = 'FACES ${r.faces}|VERTICES ${r.vertices}|POINTS ${r.points}|PROGRAMS ${m.programs}|GEOMETRIES ${m.geometries}|TEXTURES ${m.textures}';
+            renderInfo.textContent = 'FACES ${r.faces} | VERTICES ${r.vertices} | POINTS ${r.points} | PROGRAMS ${m.programs} | GEOMETRIES ${m.geometries} | TEXTURES ${m.textures}';
         }
     }
 
@@ -198,4 +201,25 @@ class MeshViewerView {
     inline function requestAnimationFrame() {
         animationFrameId = window.requestAnimationFrame( untyped update );
     }
+
+    inline function cancelAnimationFrame() {
+        if( animationFrameId != null )
+            window.cancelAnimationFrame( animationFrameId );
+    }
 }
+
+//TODO
+/*
+private class MeshObject extends three.Group {
+
+    var grid : GridHelper;
+    var boundingBox : BoundingBoxHelper;
+
+    public function new( mesh : Mesh ) {
+
+        super();
+
+        add( mesh );
+    }
+}
+*/

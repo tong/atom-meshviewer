@@ -6,18 +6,33 @@ using Lambda;
 using haxe.io.Path;
 
 @:keep
-class Main {
+class AtomPackage {
 
     static inline function __init__() {
-        untyped module.exports = Main;
-        var THREE = js.Lib.require( './three' );
+
+        untyped module.exports = AtomPackage;
+
+        //var THREE = js.Lib.require( './three' );
+
+        haxe.macro.Compiler.includeFile("data/three.js");
+        haxe.macro.Compiler.includeFile("data/loaders/OBJLoader.js");
+
+        /*
+        haxe.macro.Compiler.includeFile("data/loaders/OBJMTLLoader.js");
+        //haxe.macro.Compiler.includeFile("data/loaders/ColladaLoader.js");
+        haxe.macro.Compiler.includeFile("data/loaders/MTLLoader.js");
+        */
     }
 
-    static var allowedFileTypes = ['mesh','obj'];
+    static var allowedFileTypes = [
+        'mesh',
+        //'dae',
+        'obj'
+    ];
 
-    static var config = {
-        //TODO
-    };
+    /*
+    static var config = {};
+    */
 
     static var opener : Disposable;
     static var viewProvider : Disposable;
@@ -25,7 +40,7 @@ class Main {
 
     static function activate( state ) {
 
-        trace( 'Atom-meshviewer' );
+        trace( 'Atom-meshviewer-dev' );
 
         statusBar = new StatusBarView();
 
@@ -33,7 +48,7 @@ class Main {
                 var view = new MeshViewerView();
                 model.init( view, function(e) {
                     if( e != null ) {
-                        Atom.notifications.addError( 'Mesh error   ```'+e+'```' );
+                        Atom.notifications.addError( 'Mesh error  ```'+e+'```' );
                         //TODO close meshviewer pane
                         //model.destroy();
                     }

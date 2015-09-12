@@ -7,6 +7,11 @@
 -lib hxnodejs
 -dce full
 -D noEmbedJS
-Main
+AtomPackage
 -debug
 #--no-traces
+
+#--next
+#-cmd rm -f lib/three.js
+#-cmd cat src/js/three.js >> lib/three.js
+#-cmd cat src/js/loaders/*.js >> lib/three.js
